@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
@@ -17,6 +16,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +61,14 @@ public class helloJava {
 		
 		String testFile = "Files\\WithoutStopWordOriginal.arff";
 		String originalData ="Original.txt";
+		String lock = "lockjava.txt";
 		while(true)	{
 			
 			if(new File(testFile).exists() && !new File("lock.txt").exists())	{
+				new File(lock).createNewFile();
+				Path path = Paths.get(lock);
+				Files.setAttribute(path, "dos:hidden", Boolean.TRUE, LinkOption.NOFOLLOW_LINKS);
+
 				List<String> allLines = Files.readAllLines(Paths.get(originalData));
 				System.out.println("Test verisi okumasý yapýlýyor..");
 				
@@ -86,6 +92,7 @@ public class helloJava {
 				System.out.println("Sýnýflandýrma iþlemi tamamlandý...\n\n\n--------------------------------");
 				new File(testFile).delete();
 				new File(originalData).delete();
+				new File(lock).delete();
 			}
 		}
 	}
